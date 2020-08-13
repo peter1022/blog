@@ -1,4 +1,5 @@
 module.exports = {
+  pathPrefix: "/blog",
   siteMetadata: {
     title: `Gatsby Starter Blog`,
     author: {
@@ -74,6 +75,34 @@ module.exports = {
       resolve: `gatsby-plugin-typography`,
       options: {
         pathToConfigModule: `src/utils/typography`,
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-tinacms',
+      options: {
+        // The CMS will be disabled on your production site
+        enabled: process.env.NODE_ENV !== 'production',
+        // sidebar: true,
+        sidebar: {
+          hidden: process.env.NODE_ENV === "production",
+          position: "displace"
+        },
+        plugins: [
+          {
+            resolve: 'gatsby-tinacms-git',
+            options: {
+              // pathToRepo: 'git@2story2:peter1022/blog.git',
+              gitRemote: "git@2story2:peter1022/blog.git",
+              // pathToContent: '/',
+              defaultCommitMessage: 'Edited with TinaCMS',
+              defaultCommitName: 'TinaCMS',
+              defaultCommitEmail: 'git@tinacms.org',
+              pushOnCommit: true,
+            },
+          },
+          'gatsby-tinacms-json',
+          'gatsby-tinacms-remark',
+        ],
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality

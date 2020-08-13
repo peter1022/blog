@@ -5,8 +5,10 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
+import { remarkForm } from "gatsby-tinacms-remark"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
+
   const post = data.markdownRemark
   const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
@@ -78,7 +80,31 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
   )
 }
 
-export default BlogPostTemplate
+// 添加创建Form功能
+const BlogPostForm = {
+    // id: data.markdownRemark.id,
+    // label: "Blog Post",
+    // initialValues: data.markdownRemark,
+    // onSubmit: values => {
+    //     alert(`Submitting ${values.frontmatter.title}`)
+    // },
+    fields: [
+        {
+            name: "frontmatter.title",
+            label: "Title",
+            component: "text",
+        },
+        { name: "frontmatter.date", component: "date", label: "Date" },
+        {
+            name: "frontmatter.description",
+            label: "Description",
+            component: "textarea",
+        },
+        { name: "rawMarkdownBody", component: "markdown", label: "Body" },
+    ],
+}
+
+export default remarkForm(BlogPostTemplate, BlogPostForm)
 
 export const pageQuery = graphql`
   query BlogPostBySlug($slug: String!) {
@@ -91,6 +117,7 @@ export const pageQuery = graphql`
       id
       excerpt(pruneLength: 160)
       html
+      ...TinaRemark
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
