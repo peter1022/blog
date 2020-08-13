@@ -1,5 +1,8 @@
+require("dotenv").config({ path: ".env.cloud" })
+const basicAuth = require("express-basic-auth")
+
 module.exports = {
-  pathPrefix: "/blog/docs",
+  pathPrefix: "/blog",
   siteMetadata: {
     title: `Gatsby Starter Blog`,
     author: {
@@ -11,6 +14,15 @@ module.exports = {
     social: {
       twitter: `kylemathews`,
     },
+  },
+  developMiddleware: app => {
+    if (process.env.ENABLE_AUTH) {
+      app.use(basicAuth({
+        users: {[process.env.AUTH_USER]: process.env.AUTH_PW},
+        challenge: true,
+        realm: 'Peter\'s blog',
+      }))
+    }
   },
   plugins: [
     {
@@ -81,12 +93,12 @@ module.exports = {
       resolve: 'gatsby-plugin-tinacms',
       options: {
         // The CMS will be disabled on your production site
-        enabled: process.env.NODE_ENV !== 'production',
-        // sidebar: true,
-        sidebar: {
-          hidden: process.env.NODE_ENV === "production",
-          position: "displace"
-        },
+        enabled:  true, //process.env.NODE_ENV !== 'production',
+        sidebar: true,
+        // sidebar: {
+          // hidden: process.env.NODE_ENV === "production",
+          // position: "displace"
+        // },
         plugins: [
           {
             resolve: 'gatsby-tinacms-git',
